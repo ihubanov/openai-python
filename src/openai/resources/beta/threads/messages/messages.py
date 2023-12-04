@@ -234,6 +234,32 @@ class Messages(SyncAPIResource):
             model=ThreadMessage,
         )
 
+    def delete(
+        self,
+        thread_id: str,
+        message_id: str,
+        *,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
+    ) -> ThreadMessage:
+        """
+        Delete a message in a thread.
+        """
+        # Ensure the required 'OpenAI-Beta' header is included
+        extra_headers = {"OpenAI-Beta": "assistants=v1", **(extra_headers or {})}
+
+        return self._delete(
+            f"/threads/{thread_id}/messages/{message_id}",
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout
+            ),
+            cast_to=ThreadMessage,
+        )
 
 class AsyncMessages(AsyncAPIResource):
     files: AsyncFiles
@@ -442,6 +468,32 @@ class AsyncMessages(AsyncAPIResource):
             model=ThreadMessage,
         )
 
+    async def delete(
+        self,
+        thread_id: str,
+        message_id: str,
+        *,
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
+    ) -> ThreadMessage:
+        """
+        Asynchronously delete a message in a thread.
+        """
+        # Ensure the required 'OpenAI-Beta' header is included
+        extra_headers = {"OpenAI-Beta": "assistants=v1", **(extra_headers or {})}
+
+        return await self._delete(
+            f"/threads/{thread_id}/messages/{message_id}",
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout
+            ),
+            cast_to=ThreadMessage,
+        )
 
 class MessagesWithRawResponse:
     def __init__(self, messages: Messages) -> None:
@@ -458,6 +510,9 @@ class MessagesWithRawResponse:
         )
         self.list = to_raw_response_wrapper(
             messages.list,
+        )
+        self.delete = to_raw_response_wrapper(
+            messages.delete,
         )
 
 
@@ -476,4 +531,7 @@ class AsyncMessagesWithRawResponse:
         )
         self.list = async_to_raw_response_wrapper(
             messages.list,
+        )
+        self.delete = async_to_raw_response_wrapper(
+            messages.delete,
         )
